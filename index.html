@@ -248,6 +248,30 @@
             border-left: 4px solid var(--accent-color);
         }
         
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            margin-right: 10px;
+        }
+        
+        .gst-details {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background-color: rgba(76, 201, 240, 0.1);
+            border-radius: 8px;
+            border-left: 4px solid var(--accent-color);
+        }
+        
+        .gst-details.visible {
+            display: block;
+        }
+        
         @media (max-width: 768px) {
             .form-row {
                 flex-direction: column;
@@ -410,10 +434,20 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="gstNumber">GST Number:</label>
-                        <input type="text" id="gstNumber" required>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="gstApplicable">
+                            <label for="gstApplicable" style="margin-bottom:0;">GST Applicable</label>
+                        </div>
                     </div>
                 </div>
+                
+                <div id="gstDetails" class="gst-details">
+                    <div class="form-group">
+                        <label for="gstNumber">GST Number:</label>
+                        <input type="text" id="gstNumber">
+                    </div>
+                </div>
+                
                 <div class="form-group">
                     <label for="businessDescription">Business Description:</label>
                     <textarea id="businessDescription" required></textarea>
@@ -608,13 +642,28 @@
             } else if (employmentType === 'Business') {
                 document.getElementById('businessDetails').classList.add('visible');
                 // Set required fields for business section
-                document.querySelectorAll('#businessDetails input, #businessDetails select, #businessDetails textarea').forEach(el => {
+                document.querySelectorAll('#businessDetails input:not(#gstNumber), #businessDetails select, #businessDetails textarea').forEach(el => {
                     el.setAttribute('required', '');
                 });
                 // Remove required from job section
                 document.querySelectorAll('#jobDetails input, #jobDetails select, #jobDetails textarea').forEach(el => {
                     el.removeAttribute('required');
                 });
+            }
+        });
+        
+        // Show/hide GST details based on checkbox
+        document.getElementById('gstApplicable').addEventListener('change', function() {
+            const gstDetails = document.getElementById('gstDetails');
+            const gstNumber = document.getElementById('gstNumber');
+            
+            if (this.checked) {
+                gstDetails.classList.add('visible');
+                gstNumber.setAttribute('required', '');
+            } else {
+                gstDetails.classList.remove('visible');
+                gstNumber.removeAttribute('required');
+                gstNumber.value = '';
             }
         });
         
@@ -856,7 +905,7 @@
             
             // In a real implementation, you would:
             // 1. Collect all form data
-            // 2. Send it to info@instaloans.online via AJAX or form submission
+            // 2. Send it to info@businessmarts.site via AJAX or form submission
             // 3. Show a success message to the user
             
             // For demo purposes, we'll log the form data to console
